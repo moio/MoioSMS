@@ -18,7 +18,7 @@ object Configurator extends Actor {
   val file = new File(System.getProperty("user.home")+"/.moiosms/config.ini")
   touch(file)
   val ini = new Ini(file)
-  ini.put("versioning", "version", "1.0")
+  ini.put("versioni", "versione", "1.0")
   
   /**
    * @see scala.actors.Actor#act()
@@ -27,14 +27,11 @@ object Configurator extends Actor {
     while (true) {
       receive {
         case g:Get =>
-          val value = ini get (g.key, "main")
+          val value = ini get ("principale", g.key)
           sender ! Got(if (value == null) None else Some(value))
         case p:Put =>
-          ini put ("main", p.key, p.value)
+          ini put ("principale", p.key, p.value)
           ini store
-        case Stop =>
-          Console println this + ": stop"
-          exit
       }
     }
   }

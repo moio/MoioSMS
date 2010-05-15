@@ -13,7 +13,7 @@ import net.moioli.moiosms.senders.VodafoneOCR._
 object Vodafone extends Sender {
 
    override def login(params:Map[String, String]):Done = {
-    Http.post(
+    val (acode, aheaders, abody) = Http.post(
       "https://widget.vodafone.it/190/trilogy/jsp/login.do?" + System.currentTimeMillis(),
       Map("username" -> params("Nome utente"), "password" -> params("Password"))
     )
@@ -24,11 +24,10 @@ object Vodafone extends Sender {
     val xml = XML.loadString(body)
     
     if ((xml \\ "logged-in").text equals "true"){
-      precheck()
-      return Done(true, "Vodafone: autenticato correttamente")
+      return Done(true, "connessione avvenuta correttamente")
     }
     else{
-      return Done(false, "Vodafone: nome utente o password errati")
+      return Done(false, "nome utente o password errati")
     }
   }
    
@@ -39,32 +38,49 @@ object Vodafone extends Sender {
   }
 
   override def send(receiver:String, text:String):Done = {
-    val captchaString = getCaptchaString(receiver, text)
-      
-    val (code, headers, body) = Http.post(
-      "https://widget.vodafone.it/190/fsms/send.do?channel=VODAFONE_DW",
-      Map("receiverNumber" -> receiver, "message" ->text, "verifyCode" -> captchaString)
-    )
-
-    return Done(true, "Vodafone: " + body)
-  }
-
-  def getCaptchaString(receiverNumber:String, message:String):String = {
+    precheck()
     val (code, headers, body) = Http.post(
       "https://widget.vodafone.it/190/fsms/prepare.do?channel=VODAFONE_DW",
-      Map("receiverNumber" -> receiverNumber, "message" ->message)
+      Map("receiverNumber" -> receiver, "message" ->text)
     )
     
     if (body.contains("Servizio non disponibile")){
-      
+      val cause = extractNodes(body, "ERRORCODE").head.attribute("v").get.toString
+      return Done(false, "messaggio a " + receiver + " non inviato, " +
+        (if (cause equals "104"){
+          "i messaggi di oggi sono esauriti"
+        }
+        else{
+          "errore non riconosciuto " + cause
+       }))
     }
     
-    val xml = XML.loadString(body)
+    val errorNodes = extractNodes(body, "CODEIMG")
     
-    val node = (xml \\ "e").filter(_.attributes.value equals "CODEIMG") 
-    val image = read(node(0) child(0) toString)
+    var captchaString = if (errorNodes isEmpty){
+      ""
+    }
+    else{
+      val image = read((errorNodes head) child(0) toString)
+      decode(image)
+    }
+
+    val (code2, headers2, body2) = Http.post(
+      "https://widget.vodafone.it/190/fsms/send.do?channel=VODAFONE_DW",
+      Map("receiverNumber" -> receiver, "message" ->text, "verifyCode" -> captchaString)
+    )
     
-    return decode(image)
+    if (body2 contains "inviati correttamente"){
+      return Done(true, "messaggio inviato a " + receiver)
+    }
+    else{
+      return Done(false, "messaggio a " + receiver + " non inviato, errore non riconosciuto " + body)
+    }
+  }
+
+  def extractNodes(xml:String, n:String):NodeSeq = {
+    val nodes = XML.loadString(xml)
+    (nodes \\ "e").filter(_.attributes("n").head.toString equals n)
   }
   
   def getToken(username:String):String = {

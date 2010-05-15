@@ -27,7 +27,7 @@ trait Sender extends Actor {
    * List of parameters needed to login with this Sender,
    * can be overridden by subclasses.
    */
-  val paramKeys = List("Nome utente", "Password")
+  val paramKeys:List[String] = List("Nome utente", "Password")
   
   /**
    * Authenticates a user to the sender.
@@ -44,6 +44,16 @@ trait Sender extends Actor {
    */
   protected def send(receiver:String, text:String):Done
   
+  
+  /**
+   * Returns the sender name.
+   * 
+   * @return a name
+   */
+  def name():String = {
+    ((this getClass) getSimpleName) replace("$","")
+  }
+  
   /**
    * @see scala.actors.Actor#act()
    */
@@ -52,17 +62,28 @@ trait Sender extends Actor {
       try{
         receive {
           case l:Login =>
-            UserInterface ! login(l.params) 
+            sender ! login(l.params) 
           case s:Send =>
-            UserInterface ! send(s.receiver, s.message) 
-          case Stop =>
-            Console println this + ": stop"
-            exit
+            sender ! send(s.receiver, s.message) 
         }
       }
       catch{
-        case e: UnknownHostException => UserInterface ! Done(false, "Impossibile connettersi a: " + e.getMessage + ". Internet funziona?")
+        case e: UnknownHostException => sender ! Done(false, "Impossibile connettersi a: " + e.getMessage + ". Internet funziona?")
       }
     }
+  }
+}
+
+/**
+ * Returns all known senders.
+ */
+object SenderList {
+  /**
+   * Returns a list with all the known senders.
+   * 
+   * @return a name
+   */
+  def apply():List[Sender] = {
+    List(Vodafone)
   }
 }
