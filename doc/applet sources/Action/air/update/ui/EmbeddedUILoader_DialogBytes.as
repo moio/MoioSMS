@@ -1,0 +1,14 @@
+package air.update.ui
+{
+    import mx.core.*;
+
+    public class EmbeddedUILoader_DialogBytes extends ByteArrayAsset
+    {
+
+        public function EmbeddedUILoader_DialogBytes()
+        {
+            return;
+        }// end function
+
+    }
+}

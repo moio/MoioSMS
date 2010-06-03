@@ -46,6 +46,7 @@ public class ConfigurationPanel extends javax.swing.JPanel {
 
         jPanel1.setLayout(new java.awt.GridLayout(1, panels.length));
         for (ConfigurationPairPanel panel: panels){
+            panel.setText(getConfigurationText(text, panel.getLabel()));
             jPanel1.add(panel);
         }
 
@@ -65,18 +66,21 @@ public class ConfigurationPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    public String getConfigurationText(String sender, String key){
+        // scala code here
+        return "";
+    }
+
     public String getText(){
         return text;
     }
 
     public Map<String,String> getMap(){
-        Map<String,String> result = new TreeMap<String,String>();
-
-        for(ConfigurationPairPanel panel:panels){
-            result.put(panel.getText(), panel.getValue());
-        }
-
-        return result;
+      Map<String,String> result = new TreeMap<String,String>();
+      for(ConfigurationPairPanel panel:panels){
+        result.put(panel.getLabel(), panel.getText());
+      }
+      return result;
     }
 
     private String text;

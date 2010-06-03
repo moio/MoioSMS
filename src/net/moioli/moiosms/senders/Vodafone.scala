@@ -11,8 +11,10 @@ import net.moioli.moiosms.imagefilters.Image._
 import net.moioli.moiosms.senders.VodafoneOCR._
 
 object Vodafone extends Sender {
+  
+  var loggedIn = false
 
-   override def login(params:Map[String, String]):Done = {
+  override def login(params:Map[String, String]):Done = {
     val (acode, aheaders, abody) = Http.post(
       "https://widget.vodafone.it/190/trilogy/jsp/login.do?" + System.currentTimeMillis(),
       Map("username" -> params("Nome utente"), "password" -> params("Password"))
@@ -24,6 +26,7 @@ object Vodafone extends Sender {
     val xml = XML.loadString(body)
     
     if ((xml \\ "logged-in").text equals "true"){
+      loggedIn = true
       return Done(true, "connessione avvenuta correttamente")
     }
     else{
@@ -38,6 +41,10 @@ object Vodafone extends Sender {
   }
 
   override def send(receiver:String, text:String):Done = {
+    if (!loggedIn){
+      return Done(false, "nome utente o password errati")
+    }
+    
     precheck()
     val (code, headers, body) = Http.post(
       "https://widget.vodafone.it/190/fsms/prepare.do?channel=VODAFONE_DW",

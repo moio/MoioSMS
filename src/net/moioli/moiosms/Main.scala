@@ -10,8 +10,8 @@ case class Stop()
 object Main {
   def main(args : Array[String]) : Unit = {
     
-    GUI.start
     Configurator.start
+    GUI.start
     
     SenderList().foreach(sender => {
       sender start
@@ -25,7 +25,7 @@ object Main {
       })
       
       if (params nonEmpty){
-        sender !? Login(params)match {
+        sender !? Login(params) match {
           case d:Done => GUI ! Message((sender name) + ": " + d.reason)
         }
       }

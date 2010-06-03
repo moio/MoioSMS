@@ -1,0 +1,15 @@
+- nuovi siti
+- rossoalice
+- vodafone multisim
+- autoaggiornamento
+- tim
+- nome utente/pw da commandline, conf da commandline
+- skebby
+- mms vodafone, in particolare numero del mittente
+- plugin rubriche
+- notifiche
+- system tray
+- vodafone: sito in manutenzione?
+- log sms
+- git
+- contatori

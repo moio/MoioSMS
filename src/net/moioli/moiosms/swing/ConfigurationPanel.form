@@ -48,7 +48,7 @@
     </Component>
     <Container class="javax.swing.JPanel" name="jPanel1">
       <AuxValues>
-        <AuxValue name="JavaCodeGenerator_LayoutCodePre" type="java.lang.String" value="for (ConfigurationPairPanel panel: panels){&#xa;    jPanel1.add(panel);&#xa;}"/>
+        <AuxValue name="JavaCodeGenerator_LayoutCodePre" type="java.lang.String" value="for (ConfigurationPairPanel panel: panels){&#xa;    panel.setText(getConfigurationText(text, panel.getLabel()));&#xa;    jPanel1.add(panel);&#xa;}"/>
       </AuxValues>
 
       <Layout class="org.netbeans.modules.form.compat2.layouts.DesignGridLayout">

@@ -1,5 +1,5 @@
 /*
- * To change this template, choose Tools | Templates
+3 * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
 
@@ -43,6 +43,11 @@ public class ConfigurationFrame extends javax.swing.JFrame {
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
         setTitle("Siti");
         setLocationByPlatform(true);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+        });
 
         jPanel2.setLayout(new java.awt.BorderLayout());
 
@@ -83,6 +88,11 @@ public class ConfigurationFrame extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        setVisible(false);
+        dispose();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         Map<String,Map<String,String>> map = new TreeMap<String,Map<String,String>>();
 
         for(ConfigurationPanel panel:panels){
@@ -92,7 +102,7 @@ public class ConfigurationFrame extends javax.swing.JFrame {
         }
 
         save(map);
-    }//GEN-LAST:event_jButton1ActionPerformed
+    }//GEN-LAST:event_formWindowClosing
 
     protected void save(Map<String,Map<String,String>> map){
         // Scala code here

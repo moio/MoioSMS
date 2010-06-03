@@ -18,8 +18,8 @@ package net.moioli.moiosms.swing;
 public class ConfigurationPairPanel extends javax.swing.JPanel {
 
     /** Creates new form ConfigurationPairPanel */
-    public ConfigurationPairPanel(String text) {
-        this.text = text;
+    public ConfigurationPairPanel(String label) {
+        this.label = label;
         initComponents();
     }
 
@@ -35,7 +35,7 @@ public class ConfigurationPairPanel extends javax.swing.JPanel {
         jLabel1 = new javax.swing.JLabel();
         jTextField1 = new javax.swing.JTextField();
 
-        jLabel1.setText(text + ":");
+        jLabel1.setText(label);
 
         org.jdesktop.layout.GroupLayout layout = new org.jdesktop.layout.GroupLayout(this);
         this.setLayout(layout);
@@ -55,15 +55,19 @@ public class ConfigurationPairPanel extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    public String getText(){
-        return text;
+    public String getLabel(){
+        return label;
     }
 
-    public String getValue(){
-        return jTextField1.getText();
+    public String getText(){
+      return jTextField1.getText();
     }
-    
-    private String text;
+
+    public void setText(String text){
+      jTextField1.setText(text);
+    }
+
+    private String label;
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JLabel jLabel1;

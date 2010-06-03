@@ -1,0 +1,45 @@
+package 
+{
+    import flash.events.*;
+    import mx.events.*;
+    import mx.modules.*;
+
+    private class ResourceEventDispatcher extends EventDispatcher
+    {
+
+        private function ResourceEventDispatcher(param1:IModuleInfo)
+        {
+            param1.addEventListener(ModuleEvent.ERROR, moduleInfo_errorHandler, false, 0, true);
+            param1.addEventListener(ModuleEvent.PROGRESS, moduleInfo_progressHandler, false, 0, true);
+            param1.addEventListener(ModuleEvent.READY, moduleInfo_readyHandler, false, 0, true);
+            return;
+        }// end function
+
+        private function moduleInfo_progressHandler(event:ModuleEvent) : void
+        {
+            var _loc_2:* = new ResourceEvent(ResourceEvent.PROGRESS, event.bubbles, event.cancelable);
+            _loc_2.bytesLoaded = event.bytesLoaded;
+            _loc_2.bytesTotal = event.bytesTotal;
+            dispatchEvent(_loc_2);
+            return;
+        }// end function
+
+        private function moduleInfo_readyHandler(event:ModuleEvent) : void
+        {
+            var _loc_2:* = new ResourceEvent(ResourceEvent.COMPLETE);
+            dispatchEvent(_loc_2);
+            return;
+        }// end function
+
+        private function moduleInfo_errorHandler(event:ModuleEvent) : void
+        {
+            var _loc_2:* = new ResourceEvent(ResourceEvent.ERROR, event.bubbles, event.cancelable);
+            _loc_2.bytesLoaded = event.bytesLoaded;
+            _loc_2.bytesTotal = event.bytesTotal;
+            _loc_2.errorText = event.errorText;
+            dispatchEvent(_loc_2);
+            return;
+        }// end function
+
+    }
+}
